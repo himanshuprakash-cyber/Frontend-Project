@@ -29,10 +29,10 @@ import QuickActions from './components/QuickActions'
 import PerformanceChart from './components/PerformanceChart'
 import Modal from './components/Modal'
 
-const APP_NAME = 'Sciqus'
-const THEME_KEY = 'vortex-theme'
-const SETTINGS_KEY = 'vortex-settings'
-const SETTINGS_SAVED_KEY = 'vortex-settings-saved-at'
+const APP_TITLE = 'Sciqus Studio'
+const THEME_KEY = 'sciqus-theme'
+const SETTINGS_KEY = 'sciqus-settings'
+const SETTINGS_SAVED_KEY = 'sciqus-settings-saved-at'
 
 const DEFAULT_SETTINGS = {
   compactLayout: false,
@@ -905,7 +905,7 @@ function App() {
   const handleRefreshReport = useCallback(() => {
     setLastSyncedAt(new Date())
     setActivePage('analytics')
-    showToast('Analytics refreshed', 'success')
+    showToast('Checks refreshed', 'success')
   }, [showToast])
 
   const handleInviteTeammate = useCallback(() => {
@@ -970,7 +970,7 @@ function App() {
       title: stat.label,
       text: `${stat.value} - ${stat.delta || 'No additional change reported.'}`,
       buttons: [
-        { label: 'View Analytics', primary: true, action: () => handleNavigate('analytics') },
+        { label: 'View Checks', primary: true, action: () => handleNavigate('analytics') },
         { label: 'Copy Value', primary: false, action: () => { void copyText(`${stat.label}: ${stat.value}`).then(success => showToast(success ? 'Metric copied' : 'Copy failed', success ? 'success' : 'warning')) } },
       ],
     })
@@ -1057,7 +1057,7 @@ function App() {
   }, [isDark, showToast])
 
   useEffect(() => {
-    document.title = `${APP_NAME} Studio - ${currentPage.title}`
+    document.title = `${APP_TITLE} - ${currentPage.title}`
   }, [currentPage.title])
 
   useEffect(() => {
