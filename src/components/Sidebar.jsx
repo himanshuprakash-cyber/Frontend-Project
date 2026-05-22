@@ -13,8 +13,8 @@ export default function Sidebar({ activePage, onNavigate, isOpen, onClose, items
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
       >
         <div className="px-5 pb-4">
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-foreground-muted">Workspace</p>
-          <p className="mt-1 text-sm font-semibold text-foreground">Main navigation</p>
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-foreground-muted">Project menu</p>
+          <p className="mt-1 text-sm font-semibold text-foreground">Build navigation</p>
         </div>
 
         <ul className="flex-1 px-3 space-y-1">
@@ -57,7 +57,7 @@ export default function Sidebar({ activePage, onNavigate, isOpen, onClose, items
             </div>
             <div className="overflow-hidden">
               <p className="truncate text-sm font-semibold text-foreground">Himanshu K.</p>
-              <p className="text-xs text-foreground-muted">Admin - Product Ops</p>
+              <p className="text-xs text-foreground-muted">Frontend assignment</p>
             </div>
           </div>
         </div>

@@ -1,8 +1,8 @@
 const fallbackActivities = [
-  { text: 'New deployment pushed to production', time: '2 hours ago', dot: '#6366f1' },
-  { text: 'Payment of $2,400 received', time: '5 hours ago', dot: '#10b981' },
-  { text: 'Jamie joined the marketing team', time: 'Yesterday', dot: '#f59e0b' },
-  { text: 'Sprint review completed', time: '2 days ago', dot: '#ec4899' },
+  { text: 'Sidebar navigation now opens real pages', time: '2 hours ago', dot: '#6366f1' },
+  { text: 'Theme toggle persists after refresh', time: '5 hours ago', dot: '#10b981' },
+  { text: 'Search now jumps to matching views', time: 'Yesterday', dot: '#f59e0b' },
+  { text: 'GitHub repo updated with the polished build', time: '2 days ago', dot: '#ec4899' },
 ]
 
 export default function ActivityFeed({ activities = fallbackActivities, onSelectActivity }) {

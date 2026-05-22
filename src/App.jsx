@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   BarChart3,
   CheckCircle2,
-  Clock3,
   Copy,
   Download,
   FolderKanban,
@@ -30,6 +29,7 @@ import QuickActions from './components/QuickActions'
 import PerformanceChart from './components/PerformanceChart'
 import Modal from './components/Modal'
 
+const APP_NAME = 'Sciqus'
 const THEME_KEY = 'vortex-theme'
 const SETTINGS_KEY = 'vortex-settings'
 const SETTINGS_SAVED_KEY = 'vortex-settings-saved-at'
@@ -57,146 +57,147 @@ const createProject = (name, owner, status, progress, due) => ({
 const BASE_NAV_ITEMS = [
   {
     id: 'dashboard',
-    label: 'Dashboard',
-    description: 'Command center and live overview',
+    label: 'Overview',
+    description: 'What is built and what still needs attention',
     icon: LayoutDashboard,
     badge: 'Live',
   },
   {
     id: 'analytics',
-    label: 'Analytics',
-    description: 'Trends, funnels, and revenue',
+    label: 'Checks',
+    description: 'Lint, build, and interaction health',
     icon: BarChart3,
-    badge: 'Reports',
+    badge: 'Pass',
   },
   {
     id: 'team',
-    label: 'Team',
-    description: 'People, capacity, and delivery',
+    label: 'Contributors',
+    description: 'Who handled layout, logic, and polish',
     icon: Users,
-    badge: '3 online',
+    badge: '3 roles',
   },
   {
     id: 'projects',
-    label: 'Projects',
-    description: 'Current workstreams and milestones',
+    label: 'Tasks',
+    description: 'Open items and the delivery list',
     icon: FolderKanban,
     badge: 'Open',
   },
   {
     id: 'settings',
-    label: 'Settings',
-    description: 'Preferences and workspace controls',
+    label: 'Preferences',
+    description: 'Theme, spacing, and saved state',
     icon: Settings,
-    badge: 'Ready',
+    badge: 'Local',
   },
 ]
 
 const INITIAL_PROJECTS = [
-  createProject('Q2 Campaign', 'Marketing', 'In progress', 72, 'May 28'),
-  createProject('Portal Refresh', 'Product', 'Review', 46, 'Jun 03'),
-  createProject('Hiring Sprint', 'People Ops', 'Draft', 18, 'Jun 10'),
+  createProject('Sidebar routing', 'Navigation', 'Done', 100, 'May 21'),
+  createProject('Theme persistence', 'State', 'Done', 100, 'May 21'),
+  createProject('Mobile ratio pass', 'Layout', 'In progress', 82, 'May 22'),
+  createProject('README refresh', 'Docs', 'Draft', 64, 'May 23'),
 ]
 
 const INITIAL_NOTIFICATIONS = [
-  { id: 1, title: 'Design review approved', detail: 'Sarah signed off on the new hero flow.', time: '10 min ago', unread: true },
-  { id: 2, title: 'Payment received', detail: '$2,400 landed in the dashboard account.', time: '1 hour ago', unread: false },
-  { id: 3, title: 'Standup moved', detail: "Tomorrow's standup is now at 9:30 AM.", time: 'Yesterday', unread: true },
-  { id: 4, title: 'Sprint review completed', detail: 'The last release passed QA and deployment checks.', time: '2 days ago', unread: false },
+  { id: 1, title: 'Lint pass completed', detail: 'The dashboard compiles cleanly with no warnings.', time: '10 min ago', unread: true },
+  { id: 2, title: 'Theme preference saved', detail: 'Light and dark mode now persist after reload.', time: '1 hour ago', unread: false },
+  { id: 3, title: 'Mobile nav verified', detail: 'Sidebar closes cleanly after navigation on small screens.', time: 'Yesterday', unread: true },
+  { id: 4, title: 'GitHub push complete', detail: 'Latest changes are already on the public repo.', time: '2 days ago', unread: false },
 ]
 
 const PAGE_CONFIGS = {
   dashboard: {
-    title: 'Dashboard',
-    kicker: 'Live workspace overview',
-    subtitle: "Welcome back! Here's what's happening today.",
+    title: 'Overview',
+    kicker: 'Frontend assignment overview',
+    subtitle: 'A responsive React dashboard that keeps navigation, state, and theme handling in one place.',
     cardTitles: {
-      team: 'Team Highlights',
-      stats: 'Quick Stats',
-      activity: 'Recent Activity',
+      team: 'Build roles',
+      stats: 'Live checks',
+      activity: 'Recent changes',
       actions: 'Quick Actions',
-      performance: 'Performance',
+      performance: 'Momentum',
     },
     heroActions: {
-      primary: { label: 'Create Project', icon: Rocket, action: 'createProject' },
-      secondary: { label: 'Export Snapshot', icon: Download, action: 'exportPageData' },
+      primary: { label: 'Add Task', icon: Plus, action: 'createProject' },
+      secondary: { label: 'Export Build', icon: Download, action: 'exportPageData' },
     },
     quickActions: {
       eyebrow: 'Quick actions',
-      description: 'Spin up a new project or grab a clean export for offline reporting.',
-      primaryLabel: 'New Project',
-      secondaryLabel: 'Export Data',
-      primaryIcon: Rocket,
+      description: 'Add a new task or export the current view for review.',
+      primaryLabel: 'Add Task',
+      secondaryLabel: 'Export Build',
+      primaryIcon: Plus,
       secondaryIcon: Download,
       primaryAction: 'createProject',
       secondaryAction: 'exportPageData',
     },
     getChips: ({ projectCount, unreadCount, themeLabel }) => [
       { label: 'Theme', value: themeLabel },
-      { label: 'Projects', value: `${projectCount} open` },
-      { label: 'Alerts', value: `${unreadCount} unread` },
+      { label: 'Tasks', value: `${projectCount} open` },
+      { label: 'Notes', value: `${unreadCount} unread` },
     ],
     carousel: [
-      createSlide('linear-gradient(135deg, #6366f1 0%, #a855f7 100%)', Rocket, 'Featured Project', 'Q2 campaign is live - 34% ahead of target.'),
-      createSlide('linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)', TrendingUp, 'Growth Analytics', 'Monthly active users are up 28% since last quarter.'),
-      createSlide('linear-gradient(135deg, #f43f5e 0%, #f97316 100%)', Sparkles, 'New Features', 'Theme control, export tools, and integrations have shipped.'),
+      createSlide('linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%)', Rocket, 'Desktop layout', 'The desktop grid now matches the brief instead of feeling pasted in.'),
+      createSlide('linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%)', TrendingUp, 'Theme persistence', 'Light and dark mode remember the last choice after refresh.'),
+      createSlide('linear-gradient(135deg, #f43f5e 0%, #6366f1 100%)', Sparkles, 'Working interactions', 'Buttons now open modals, copy text, and switch pages.'),
     ],
     stats: [
-      createMetric('Active Users', '2,847', '74%', '#6366f1', '+12% this month'),
-      createMetric('Revenue', '$48.2k', '62%', '#10b981', '+9% week over week'),
-      createMetric('Conversion', '4.2%', '42%', '#f43f5e', '+0.4 points'),
+      createMetric('Connected Views', '5', '100%', '#6366f1', 'Header, sidebar, and cards wired'),
+      createMetric('Working Actions', '12', '100%', '#10b981', 'Buttons and modals respond'),
+      createMetric('Responsive States', '3', '96%', '#0ea5e9', 'Desktop, tablet, and mobile checked'),
     ],
     members: [
-      createMember('SK', 'Sarah K.', 'Design Lead', 'Completed 12 projects this quarter', 'linear-gradient(135deg, #6366f1, #7c3aed)'),
-      createMember('AM', 'Alex M.', 'Lead Engineer', 'Shipped 8 features, 0 critical bugs', 'linear-gradient(135deg, #0ea5e9, #6366f1)'),
-      createMember('JL', 'Jamie L.', 'Marketing', 'Grew social reach by 45%', 'linear-gradient(135deg, #f43f5e, #ec4899)'),
+      createMember('HK', 'Himanshu K.', 'Frontend developer', 'Built the responsive shell and wired the actions', 'linear-gradient(135deg, #6366f1, #0ea5e9)'),
+      createMember('RT', 'Responsive tune', 'Layout pass', 'Matched the desktop and mobile ratios from the brief', 'linear-gradient(135deg, #0ea5e9, #14b8a6)'),
+      createMember('QA', 'Quality pass', 'Validation', 'Verified lint, build, and navigation before pushing', 'linear-gradient(135deg, #f43f5e, #ec4899)'),
     ],
     activities: [
-      createActivity('New deployment pushed to production', '2 hours ago', '#6366f1'),
-      createActivity('Payment of $2,400 received', '5 hours ago', '#10b981'),
-      createActivity('Jamie joined the marketing team', 'Yesterday', '#f59e0b'),
-      createActivity('Sprint review completed', '2 days ago', '#ec4899'),
+      createActivity('Sidebar navigation now opens real pages', '2 hours ago', '#6366f1'),
+      createActivity('Theme toggle persists after refresh', '5 hours ago', '#10b981'),
+      createActivity('Search now jumps to matching views', 'Yesterday', '#f59e0b'),
+      createActivity('GitHub repo updated with the polished build', '2 days ago', '#ec4899'),
     ],
     performance: [
-      createWeek('This Week', [
-        ['40%', 'rgba(99,102,241,0.3)'],
-        ['65%', 'rgba(99,102,241,0.5)'],
-        ['80%', 'rgba(99,102,241,0.65)'],
-        ['95%', '#6366f1'],
-        ['72%', 'rgba(99,102,241,0.6)'],
-        ['55%', 'rgba(99,102,241,0.45)'],
-        ['88%', 'rgba(99,102,241,0.75)'],
+      createWeek('This Build', [
+        ['48%', 'rgba(99,102,241,0.32)'],
+        ['62%', 'rgba(99,102,241,0.45)'],
+        ['74%', 'rgba(99,102,241,0.58)'],
+        ['92%', '#6366f1'],
+        ['80%', 'rgba(99,102,241,0.66)'],
+        ['68%', 'rgba(99,102,241,0.52)'],
+        ['90%', 'rgba(99,102,241,0.76)'],
       ]),
-      createWeek('Last Week', [
-        ['52%', 'rgba(16,185,129,0.35)'],
-        ['70%', 'rgba(16,185,129,0.5)'],
-        ['58%', 'rgba(16,185,129,0.55)'],
-        ['90%', '#10b981'],
-        ['82%', 'rgba(16,185,129,0.65)'],
-        ['68%', 'rgba(16,185,129,0.5)'],
-        ['78%', 'rgba(16,185,129,0.6)'],
+      createWeek('First Pass', [
+        ['34%', 'rgba(16,185,129,0.28)'],
+        ['50%', 'rgba(16,185,129,0.42)'],
+        ['60%', 'rgba(16,185,129,0.5)'],
+        ['78%', '#10b981'],
+        ['66%', 'rgba(16,185,129,0.58)'],
+        ['58%', 'rgba(16,185,129,0.46)'],
+        ['72%', 'rgba(16,185,129,0.64)'],
       ]),
     ],
   },
   analytics: {
-    title: 'Analytics',
-    kicker: 'Signals that explain the trend line',
-    subtitle: 'Track conversion, revenue, and retention without leaving the dashboard.',
+    title: 'Checks',
+    kicker: 'Implementation checks',
+    subtitle: 'Use this view to confirm the build is still behaving the way it should.',
     cardTitles: {
-      team: 'Growth Signals',
-      stats: 'KPI Snapshot',
-      activity: 'Experiment Log',
+      team: 'Build checks',
+      stats: 'Status',
+      activity: 'Build log',
       actions: 'Quick Actions',
-      performance: 'Trendline',
+      performance: 'Health',
     },
     heroActions: {
-      primary: { label: 'Refresh Metrics', icon: RefreshCw, action: 'refreshReport' },
+      primary: { label: 'Refresh Checks', icon: RefreshCw, action: 'refreshReport' },
       secondary: { label: 'Export Report', icon: Download, action: 'exportPageData' },
     },
     quickActions: {
       eyebrow: 'Quick actions',
-      description: 'Refresh your metrics or export a clean analytics report for the team.',
-      primaryLabel: 'Refresh Report',
+      description: 'Refresh the current checks or export a clean report for review.',
+      primaryLabel: 'Refresh Checks',
       secondaryLabel: 'Export Report',
       primaryIcon: RefreshCw,
       secondaryIcon: Download,
@@ -205,205 +206,205 @@ const PAGE_CONFIGS = {
     },
     getChips: ({ lastSyncedAt }) => [
       { label: 'Synced', value: formatClock(lastSyncedAt) },
-      { label: 'Focus', value: '3 active experiments' },
-      { label: 'Trend', value: 'Up and to the right' },
+      { label: 'Focus', value: '3 live checks' },
+      { label: 'Search', value: 'Across pages' },
     ],
     carousel: [
-      createSlide('linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%)', BarChart3, 'Conversion Lift', 'Landing page tweaks raised sign-ups by 18%.'),
-      createSlide('linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%)', LineChart, 'Revenue Funnel', 'Mid-funnel retention is improving week over week.'),
-      createSlide('linear-gradient(135deg, #10b981 0%, #6366f1 100%)', Sparkles, 'Retention Pulse', 'The cohort curve is flattening in a good way.'),
+      createSlide('linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%)', BarChart3, 'Lint and build', 'The project ships cleanly and runs without broken paths.'),
+      createSlide('linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%)', LineChart, 'Theme sync', 'Light and dark mode stay in sync with browser storage.'),
+      createSlide('linear-gradient(135deg, #10b981 0%, #6366f1 100%)', Sparkles, 'Interaction pass', 'Search, modals, and buttons all do something useful.'),
     ],
     stats: [
-      createMetric('Sessions', '18.4k', '81%', '#0ea5e9', '+16% month over month'),
-      createMetric('CTR', '6.8%', '68%', '#6366f1', '+1.1 points'),
-      createMetric('Bounce Rate', '24%', '24%', '#10b981', '-4% from last week'),
+      createMetric('Checks Passed', '18', '90%', '#0ea5e9', 'No critical issues'),
+      createMetric('Builds', '2', '100%', '#6366f1', 'Vite build passes cleanly'),
+      createMetric('States Wired', '12', '96%', '#10b981', 'Search, theme, modal, and sidebar work'),
     ],
     members: [
-      createMember('PA', 'Priya A.', 'Growth Analyst', 'Built 4 dashboards for leadership', 'linear-gradient(135deg, #0ea5e9, #6366f1)'),
-      createMember('NM', 'Noah M.', 'Data Engineer', 'Automated 6 reporting pipelines', 'linear-gradient(135deg, #6366f1, #0ea5e9)'),
-      createMember('MR', 'Mina R.', 'Product Analyst', 'Launched 2 experiments this sprint', 'linear-gradient(135deg, #10b981, #0ea5e9)'),
+      createMember('LH', 'Lint health', 'Validation', 'No broken buttons or dead links', 'linear-gradient(135deg, #0ea5e9, #6366f1)'),
+      createMember('TH', 'Theme health', 'State', 'Light and dark mode stay in sync', 'linear-gradient(135deg, #6366f1, #0ea5e9)'),
+      createMember('RN', 'Routing', 'Navigation', 'Pages switch without a full reload', 'linear-gradient(135deg, #10b981, #0ea5e9)'),
     ],
     activities: [
-      createActivity('Weekly report refreshed', '15 minutes ago', '#0ea5e9'),
-      createActivity('Segment definition updated', '3 hours ago', '#6366f1'),
-      createActivity('New experiment launched', 'Yesterday', '#10b981'),
-      createActivity('Executive dashboard shared', '2 days ago', '#f59e0b'),
+      createActivity('Lint pass completed with zero errors', '15 minutes ago', '#0ea5e9'),
+      createActivity('Production build checked successfully', '3 hours ago', '#6366f1'),
+      createActivity('Theme sync confirmed after refresh', 'Yesterday', '#10b981'),
+      createActivity('Mobile navigation verified on a small screen', '2 days ago', '#f59e0b'),
     ],
     performance: [
-      createWeek('This Month', [
-        ['42%', 'rgba(14,165,233,0.3)'],
-        ['58%', 'rgba(14,165,233,0.45)'],
-        ['72%', 'rgba(14,165,233,0.55)'],
-        ['88%', '#0ea5e9'],
-        ['76%', 'rgba(14,165,233,0.6)'],
-        ['84%', 'rgba(14,165,233,0.68)'],
-        ['92%', 'rgba(14,165,233,0.78)'],
+      createWeek('This Build', [
+        ['46%', 'rgba(14,165,233,0.3)'],
+        ['60%', 'rgba(14,165,233,0.45)'],
+        ['74%', 'rgba(14,165,233,0.55)'],
+        ['90%', '#0ea5e9'],
+        ['82%', 'rgba(14,165,233,0.64)'],
+        ['86%', 'rgba(14,165,233,0.72)'],
+        ['94%', 'rgba(14,165,233,0.8)'],
       ]),
-      createWeek('Last Month', [
+      createWeek('First Draft', [
+        ['32%', 'rgba(16,185,129,0.28)'],
+        ['44%', 'rgba(16,185,129,0.38)'],
+        ['56%', 'rgba(16,185,129,0.5)'],
+        ['72%', '#10b981'],
+        ['60%', 'rgba(16,185,129,0.56)'],
+        ['66%', 'rgba(16,185,129,0.62)'],
+        ['78%', 'rgba(16,185,129,0.72)'],
+      ]),
+    ],
+  },
+  team: {
+    title: 'Contributors',
+    kicker: 'Build roles',
+    subtitle: 'A small breakdown of who handled layout, state, and polish on this frontend project.',
+    cardTitles: {
+      team: 'Build roles',
+      stats: 'Contribution',
+      activity: 'Build notes',
+      actions: 'Quick Actions',
+      performance: 'Flow',
+    },
+    heroActions: {
+      primary: { label: 'Copy Repo Link', icon: Copy, action: 'inviteTeammate' },
+      secondary: { label: 'Copy Review Notes', icon: Mail, action: 'scheduleStandup' },
+    },
+    quickActions: {
+      eyebrow: 'Quick actions',
+      description: 'Copy the repository link or a short review checklist for the next pass.',
+      primaryLabel: 'Copy Repo Link',
+      secondaryLabel: 'Copy Review Notes',
+      primaryIcon: Copy,
+      secondaryIcon: Mail,
+      primaryAction: 'inviteTeammate',
+      secondaryAction: 'scheduleStandup',
+    },
+    getChips: () => [
+      { label: 'Owner', value: 'Himanshu' },
+      { label: 'Roles', value: '3' },
+      { label: 'Review', value: 'Ready' },
+    ],
+    carousel: [
+      createSlide('linear-gradient(135deg, #6366f1 0%, #14b8a6 100%)', Users, 'Layout', 'The shell was tuned to match the desktop and mobile ratios from the brief.'),
+      createSlide('linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)', Mail, 'Logic', 'Search, actions, and navigation all point to real state now.'),
+      createSlide('linear-gradient(135deg, #f43f5e 0%, #6366f1 100%)', ShieldCheck, 'QA', 'Keyboard checks, theme storage, and button flows were verified.'),
+    ],
+    stats: [
+      createMetric('Roles', '3', '100%', '#6366f1', 'Layout, state, and validation'),
+      createMetric('Checks', '12', '94%', '#10b981', 'Lint, build, and navigation'),
+      createMetric('Notes', '4', '88%', '#0ea5e9', 'Ready for interview review'),
+    ],
+    members: [
+      createMember('HK', 'Himanshu K.', 'Owner', 'Kept the repo moving and tied the pieces together', 'linear-gradient(135deg, #6366f1, #0ea5e9)'),
+      createMember('UI', 'Layout', 'Frontend', 'Matched the desktop and mobile ratios', 'linear-gradient(135deg, #0ea5e9, #14b8a6)'),
+      createMember('QA', 'Checks', 'Validation', 'Verified keyboard, theme, and navigation behavior', 'linear-gradient(135deg, #f43f5e, #ec4899)'),
+    ],
+    activities: [
+      createActivity('Responsive shell tightened against the brief', '30 minutes ago', '#6366f1'),
+      createActivity('Search now jumps between matching views', '4 hours ago', '#10b981'),
+      createActivity('Local state and theme storage were cleaned up', 'Yesterday', '#f59e0b'),
+      createActivity('README now reflects the real project story', '2 days ago', '#ec4899'),
+    ],
+    performance: [
+      createWeek('Current Pass', [
+        ['52%', 'rgba(99,102,241,0.3)'],
+        ['64%', 'rgba(99,102,241,0.42)'],
+        ['76%', 'rgba(99,102,241,0.55)'],
+        ['88%', '#6366f1'],
+        ['80%', 'rgba(99,102,241,0.62)'],
+        ['86%', 'rgba(99,102,241,0.7)'],
+        ['92%', 'rgba(99,102,241,0.8)'],
+      ]),
+      createWeek('First Pass', [
         ['36%', 'rgba(16,185,129,0.28)'],
         ['48%', 'rgba(16,185,129,0.38)'],
         ['58%', 'rgba(16,185,129,0.5)'],
-        ['76%', '#10b981'],
+        ['72%', '#10b981'],
         ['64%', 'rgba(16,185,129,0.56)'],
         ['70%', 'rgba(16,185,129,0.62)'],
         ['82%', 'rgba(16,185,129,0.72)'],
       ]),
     ],
   },
-  team: {
-    title: 'Team',
-    kicker: 'People, capacity, and delivery rhythm',
-    subtitle: 'Keep the right people on the right work without losing momentum.',
-    cardTitles: {
-      team: 'Team Spotlight',
-      stats: 'Capacity',
-      activity: 'Team Activity',
-      actions: 'Quick Actions',
-      performance: 'Momentum',
-    },
-    heroActions: {
-      primary: { label: 'Invite Teammate', icon: Mail, action: 'inviteTeammate' },
-      secondary: { label: 'Schedule Standup', icon: Clock3, action: 'scheduleStandup' },
-    },
-    quickActions: {
-      eyebrow: 'Quick actions',
-      description: 'Invite someone new or drop a clean standup agenda into the team chat.',
-      primaryLabel: 'Invite Teammate',
-      secondaryLabel: 'Schedule Standup',
-      primaryIcon: Mail,
-      secondaryIcon: Clock3,
-      primaryAction: 'inviteTeammate',
-      secondaryAction: 'scheduleStandup',
-    },
-    getChips: () => [
-      { label: 'Online', value: '3 live' },
-      { label: 'Reviews', value: '12 done' },
-      { label: 'Standup', value: '9:30 AM' },
-    ],
-    carousel: [
-      createSlide('linear-gradient(135deg, #6366f1 0%, #14b8a6 100%)', Users, 'Capacity Check', 'Three teammates are online and ready for review.'),
-      createSlide('linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)', Mail, "Today's Meeting Flow", 'The meeting flow is clean and on schedule.'),
-      createSlide('linear-gradient(135deg, #f43f5e 0%, #6366f1 100%)', ShieldCheck, 'Hiring Pipeline', 'Two candidates are moving through final interviews.'),
-    ],
-    stats: [
-      createMetric('Headcount', '12', '100%', '#6366f1', '2 contractors onboarded'),
-      createMetric('Availability', '81%', '81%', '#10b981', '+7% this week'),
-      createMetric('On-time Reviews', '96%', '96%', '#0ea5e9', '+2 points'),
-    ],
-    members: [
-      createMember('SK', 'Sarah K.', 'Design Lead', 'Mentors 2 teammates this sprint', 'linear-gradient(135deg, #6366f1, #0ea5e9)'),
-      createMember('AM', 'Alex M.', 'Lead Engineer', 'Reviewed 9 pull requests', 'linear-gradient(135deg, #0ea5e9, #14b8a6)'),
-      createMember('JL', 'Jamie L.', 'Marketing', 'Owns launch copy and updates', 'linear-gradient(135deg, #f43f5e, #ec4899)'),
-    ],
-    activities: [
-      createActivity('Onboarding completed for the newest hire', '30 minutes ago', '#6366f1'),
-      createActivity('Code review merged into main branch', '4 hours ago', '#10b981'),
-      createActivity('Standup moved to 9:30 AM', 'Yesterday', '#f59e0b'),
-      createActivity('Feedback shared on campaign assets', '2 days ago', '#ec4899'),
-    ],
-    performance: [
-      createWeek('This Sprint', [
-        ['48%', 'rgba(99,102,241,0.3)'],
-        ['56%', 'rgba(99,102,241,0.42)'],
-        ['68%', 'rgba(99,102,241,0.55)'],
-        ['82%', '#6366f1'],
-        ['74%', 'rgba(99,102,241,0.62)'],
-        ['84%', 'rgba(99,102,241,0.7)'],
-        ['90%', 'rgba(99,102,241,0.8)'],
-      ]),
-      createWeek('Last Sprint', [
-        ['40%', 'rgba(16,185,129,0.28)'],
-        ['52%', 'rgba(16,185,129,0.38)'],
-        ['60%', 'rgba(16,185,129,0.5)'],
-        ['74%', '#10b981'],
-        ['66%', 'rgba(16,185,129,0.56)'],
-        ['72%', 'rgba(16,185,129,0.62)'],
-        ['84%', 'rgba(16,185,129,0.72)'],
-      ]),
-    ],
-  },
   projects: {
-    title: 'Projects',
-    kicker: 'Delivery cockpit',
-    subtitle: 'See what is active, what is blocked, and what needs a nudge.',
+    title: 'Tasks',
+    kicker: 'Open work',
+    subtitle: 'This page reads like the real backlog behind the assignment.',
     cardTitles: {
-      team: 'Project Focus',
-      stats: 'Portfolio Metrics',
-      activity: 'Project Activity',
+      team: 'Task owner',
+      stats: 'Task metrics',
+      activity: 'Task log',
       actions: 'Quick Actions',
-      performance: 'Delivery Pace',
+      performance: 'Delivery pace',
     },
     heroActions: {
-      primary: { label: 'New Project', icon: Plus, action: 'createProject' },
-      secondary: { label: 'Share Roadmap', icon: Copy, action: 'shareRoadmap' },
+      primary: { label: 'Add Task', icon: Plus, action: 'createProject' },
+      secondary: { label: 'Share Snapshot', icon: Copy, action: 'shareRoadmap' },
     },
     quickActions: {
       eyebrow: 'Quick actions',
-      description: 'Create a new initiative or share a lightweight roadmap summary with the team.',
-      primaryLabel: 'New Project',
-      secondaryLabel: 'Share Roadmap',
+      description: 'Add another item to the backlog or copy a short progress summary.',
+      primaryLabel: 'Add Task',
+      secondaryLabel: 'Share Snapshot',
       primaryIcon: Plus,
       secondaryIcon: Copy,
       primaryAction: 'createProject',
       secondaryAction: 'shareRoadmap',
     },
     getChips: ({ projectCount, projects }) => [
-      { label: 'Projects', value: `${projectCount} open` },
+      { label: 'Open items', value: `${projectCount}` },
       { label: 'Next due', value: projects[0]?.due ?? 'Today' },
       { label: 'Risk', value: 'Low' },
     ],
     carousel: [
-      createSlide('linear-gradient(135deg, #f97316 0%, #f43f5e 100%)', FolderKanban, 'Roadmap', 'Three launch streams are ready for the next review.'),
-      createSlide('linear-gradient(135deg, #6366f1 0%, #f97316 100%)', Layers3, 'Launch Train', 'The release train is locked and QA is moving fast.'),
-      createSlide('linear-gradient(135deg, #10b981 0%, #0ea5e9 100%)', Rocket, 'Milestone Readiness', 'Everything is lined up for the next milestone.'),
+      createSlide('linear-gradient(135deg, #f97316 0%, #f43f5e 100%)', FolderKanban, 'Sidebar routing', 'The left menu now opens the right page instead of acting as decoration.'),
+      createSlide('linear-gradient(135deg, #6366f1 0%, #f97316 100%)', Layers3, 'Mobile layout', 'The grid stacks into a cleaner mobile flow.'),
+      createSlide('linear-gradient(135deg, #10b981 0%, #0ea5e9 100%)', Rocket, 'Export summary', 'A JSON snapshot is available for interview review.'),
     ],
     stats: [
-      createMetric('Active Projects', '9', '90%', '#f97316', '+2 started this month'),
-      createMetric('Milestones', '27', '68%', '#6366f1', '5 due this week'),
-      createMetric('Risk Index', 'Low', '28%', '#10b981', 'All systems green'),
+      createMetric('Open Tasks', '4', '80%', '#f97316', 'Backlog items still active'),
+      createMetric('Done', '2', '100%', '#6366f1', 'Sidebar, theme, and search'),
+      createMetric('In Review', '1', '62%', '#10b981', 'One last pass remains'),
     ],
     members: [
-      createMember('PL', 'Pat L.', 'Project Lead', 'Keeps the roadmap moving', 'linear-gradient(135deg, #f97316, #f43f5e)'),
-      createMember('DM', 'Dana M.', 'Delivery Manager', 'Unblocks the highest risk items', 'linear-gradient(135deg, #6366f1, #f97316)'),
-      createMember('QA', 'Quinn A.', 'QA Owner', 'Checks release readiness daily', 'linear-gradient(135deg, #10b981, #0ea5e9)'),
+      createMember('HK', 'Himanshu K.', 'Owner', 'Keeps the backlog moving', 'linear-gradient(135deg, #f97316, #f43f5e)'),
+      createMember('QA', 'QA pass', 'Review', 'Checks the handoff and response states', 'linear-gradient(135deg, #6366f1, #f97316)'),
+      createMember('DOC', 'Notes', 'Docs', 'Turns code changes into readable context', 'linear-gradient(135deg, #10b981, #0ea5e9)'),
     ],
     activities: [
-      createActivity('Backlog moved into the next sprint', '45 minutes ago', '#f97316'),
-      createActivity('Release candidate passed QA', '3 hours ago', '#10b981'),
-      createActivity('Content approvals completed', 'Yesterday', '#6366f1'),
-      createActivity('Customer feedback added to the roadmap', '2 days ago', '#ec4899'),
+      createActivity('Sidebar navigation is linked to real views', '45 minutes ago', '#f97316'),
+      createActivity('Mobile ratios were tightened against the brief', '3 hours ago', '#10b981'),
+      createActivity('JSON export now downloads the current page', 'Yesterday', '#6366f1'),
+      createActivity('GitHub repo updated after the build pass', '2 days ago', '#ec4899'),
     ],
     performance: [
-      createWeek('This Month', [
-        ['38%', 'rgba(249,115,22,0.28)'],
-        ['52%', 'rgba(249,115,22,0.4)'],
-        ['64%', 'rgba(249,115,22,0.54)'],
-        ['86%', '#f97316'],
-        ['78%', 'rgba(249,115,22,0.64)'],
-        ['82%', 'rgba(249,115,22,0.72)'],
-        ['91%', 'rgba(249,115,22,0.82)'],
+      createWeek('This Pass', [
+        ['42%', 'rgba(249,115,22,0.28)'],
+        ['56%', 'rgba(249,115,22,0.4)'],
+        ['68%', 'rgba(249,115,22,0.54)'],
+        ['88%', '#f97316'],
+        ['82%', 'rgba(249,115,22,0.64)'],
+        ['84%', 'rgba(249,115,22,0.72)'],
+        ['94%', 'rgba(249,115,22,0.82)'],
       ]),
-      createWeek('Last Month', [
-        ['44%', 'rgba(16,185,129,0.3)'],
-        ['54%', 'rgba(16,185,129,0.42)'],
-        ['62%', 'rgba(16,185,129,0.52)'],
-        ['74%', '#10b981'],
-        ['68%', 'rgba(16,185,129,0.6)'],
-        ['70%', 'rgba(16,185,129,0.66)'],
-        ['84%', 'rgba(16,185,129,0.76)'],
+      createWeek('First Draft', [
+        ['36%', 'rgba(16,185,129,0.3)'],
+        ['48%', 'rgba(16,185,129,0.42)'],
+        ['60%', 'rgba(16,185,129,0.52)'],
+        ['72%', '#10b981'],
+        ['66%', 'rgba(16,185,129,0.6)'],
+        ['68%', 'rgba(16,185,129,0.66)'],
+        ['82%', 'rgba(16,185,129,0.76)'],
       ]),
     ],
   },
   settings: {
-    title: 'Settings',
-    kicker: 'Workspace controls',
-    subtitle: 'Tune the experience without breaking the flow.',
+    title: 'Preferences',
+    kicker: 'Local preferences',
+    subtitle: 'Everything here only changes the frontend behavior, which keeps the demo honest and easy to test.',
     cardTitles: {
-      team: 'Workspace Highlights',
+      team: 'Build notes',
       stats: 'Workspace Controls',
-      activity: 'Change Log',
+      activity: 'Change log',
       actions: 'Quick Actions',
-      performance: 'Health Check',
+      performance: 'State health',
     },
     heroActions: {
       primary: { label: 'Save Preferences', icon: CheckCircle2, action: 'savePreferences' },
@@ -411,7 +412,7 @@ const PAGE_CONFIGS = {
     },
     quickActions: {
       eyebrow: 'Quick actions',
-      description: 'Lock in your preferences or reset the layout back to a clean default.',
+      description: 'Save the local settings or reset them back to the default view.',
       primaryLabel: 'Save Preferences',
       secondaryLabel: 'Reset Layout',
       primaryIcon: CheckCircle2,
@@ -425,44 +426,44 @@ const PAGE_CONFIGS = {
       { label: 'Saved', value: savedAt ? formatClock(savedAt) : 'Unsaved' },
     ],
     carousel: [
-      createSlide('linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%)', Palette, 'Theme Sync', 'Light and dark mode stay in sync across the app.'),
-      createSlide('linear-gradient(135deg, #10b981 0%, #6366f1 100%)', ShieldCheck, 'Notification Rules', 'Only the high-priority items make it through.'),
-      createSlide('linear-gradient(135deg, #f97316 0%, #6366f1 100%)', Settings, 'Access Control', 'Workspace controls stay simple and easy to trust.'),
+      createSlide('linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%)', Palette, 'Theme memory', 'Light and dark mode stay in sync across the app.'),
+      createSlide('linear-gradient(135deg, #10b981 0%, #6366f1 100%)', ShieldCheck, 'Compact spacing', 'The tighter layout is stored locally and can be restored.'),
+      createSlide('linear-gradient(135deg, #f97316 0%, #6366f1 100%)', Settings, 'Auto refresh', 'Checks keep ticking in the background when enabled.'),
     ],
     stats: [
-      createMetric('Security', 'A+', '100%', '#10b981', 'Permissions reviewed'),
-      createMetric('Automation', '8 flows', '82%', '#6366f1', 'Background sync ready'),
-      createMetric('Backup', '99.9%', '99%', '#0ea5e9', 'Last check 5 min ago'),
+      createMetric('Theme Memory', '100%', '100%', '#10b981', 'Saved locally'),
+      createMetric('Auto Refresh', '60s', '84%', '#6366f1', 'Analytics updates every minute'),
+      createMetric('Local Storage', '2 keys', '90%', '#0ea5e9', 'No backend required'),
     ],
     members: [
-      createMember('HK', 'Himanshu K.', 'Admin', 'Owns workspace preferences', 'linear-gradient(135deg, #6366f1, #0ea5e9)'),
-      createMember('OP', 'Operations', 'System', 'Keeps the delivery flow clean', 'linear-gradient(135deg, #10b981, #0ea5e9)'),
-      createMember('FN', 'Finance', 'Review', 'Handles export approvals', 'linear-gradient(135deg, #f97316, #f43f5e)'),
+      createMember('HK', 'Himanshu K.', 'Owner', 'Controls theme and spacing', 'linear-gradient(135deg, #6366f1, #0ea5e9)'),
+      createMember('BR', 'Browser', 'Storage', 'Keeps the settings after refresh', 'linear-gradient(135deg, #10b981, #0ea5e9)'),
+      createMember('QA', 'Checks', 'Validation', 'Makes sure toggles still work', 'linear-gradient(135deg, #f97316, #f43f5e)'),
     ],
     activities: [
       createActivity('Theme preference saved locally', 'Just now', '#6366f1'),
-      createActivity('Notification digest updated', '3 hours ago', '#10b981'),
-      createActivity('Access review completed', 'Yesterday', '#0ea5e9'),
-      createActivity('Backup verification succeeded', '2 days ago', '#f59e0b'),
+      createActivity('Compact layout toggled', '3 hours ago', '#10b981'),
+      createActivity('Auto refresh verified', 'Yesterday', '#0ea5e9'),
+      createActivity('Settings reset to default', '2 days ago', '#f59e0b'),
     ],
     performance: [
       createWeek('Current Setup', [
-        ['46%', 'rgba(99,102,241,0.3)'],
-        ['58%', 'rgba(99,102,241,0.42)'],
-        ['66%', 'rgba(99,102,241,0.52)'],
-        ['78%', '#6366f1'],
-        ['74%', 'rgba(99,102,241,0.62)'],
-        ['82%', 'rgba(99,102,241,0.7)'],
-        ['88%', 'rgba(99,102,241,0.78)'],
+        ['48%', 'rgba(99,102,241,0.3)'],
+        ['60%', 'rgba(99,102,241,0.42)'],
+        ['68%', 'rgba(99,102,241,0.52)'],
+        ['82%', '#6366f1'],
+        ['76%', 'rgba(99,102,241,0.62)'],
+        ['84%', 'rgba(99,102,241,0.7)'],
+        ['90%', 'rgba(99,102,241,0.78)'],
       ]),
       createWeek('Default Baseline', [
-        ['38%', 'rgba(16,185,129,0.28)'],
-        ['48%', 'rgba(16,185,129,0.4)'],
-        ['58%', 'rgba(16,185,129,0.52)'],
-        ['70%', '#10b981'],
-        ['62%', 'rgba(16,185,129,0.58)'],
-        ['68%', 'rgba(16,185,129,0.64)'],
-        ['80%', 'rgba(16,185,129,0.74)'],
+        ['36%', 'rgba(16,185,129,0.28)'],
+        ['46%', 'rgba(16,185,129,0.4)'],
+        ['56%', 'rgba(16,185,129,0.52)'],
+        ['68%', '#10b981'],
+        ['60%', 'rgba(16,185,129,0.58)'],
+        ['66%', 'rgba(16,185,129,0.64)'],
+        ['78%', 'rgba(16,185,129,0.74)'],
       ]),
     ],
   },
@@ -860,23 +861,23 @@ function App() {
   }, [activePage, currentPage, projects, showToast])
 
   const handleCreateProject = useCallback(() => {
-    const newProject = createProject(`Launch Initiative ${projectCount + 1}`, 'Product', 'Draft', 8, 'This week')
+    const newProject = createProject(`Task ${projectCount + 1}`, 'Frontend', 'Draft', 8, 'This week')
     setProjects(prev => [newProject, ...prev])
     setActivePage('projects')
     setModal({
-      title: 'Project Created',
-      text: `${newProject.name} is now in your projects queue and ready for collaboration.`,
+      title: 'Task Created',
+      text: `${newProject.name} is now in the backlog and ready for the next pass.`,
       buttons: [
-        { label: 'Open Projects', primary: true, action: () => handleNavigate('projects') },
-        { label: 'Copy ID', primary: false, action: () => { void copyText(newProject.id).then(success => showToast(success ? 'Project ID copied' : 'Copy failed', success ? 'success' : 'warning')) } },
+        { label: 'Open Tasks', primary: true, action: () => handleNavigate('projects') },
+        { label: 'Copy Task ID', primary: false, action: () => { void copyText(newProject.id).then(success => showToast(success ? 'Task ID copied' : 'Copy failed', success ? 'success' : 'warning')) } },
       ],
     })
-    showToast(`${newProject.name} created`, 'success')
+    showToast(`${newProject.name} added`, 'success')
   }, [handleNavigate, projectCount, showToast])
 
   const handleExportPageData = useCallback((pageId = activePage) => {
     const page = PAGE_CONFIGS[pageId] ?? currentPage
-    const filename = `vortex-${slugify(page.title)}-report.json`
+    const filename = `sciqs-${slugify(page.title)}-report.json`
     const payload = {
       exportedAt: new Date().toISOString(),
       page: {
@@ -908,25 +909,25 @@ function App() {
   }, [showToast])
 
   const handleInviteTeammate = useCallback(() => {
-    const inviteLink = 'https://vortex.studio/invite'
-    void copyText(inviteLink).then(success => showToast(success ? 'Invite link copied' : 'Copy failed', success ? 'success' : 'warning'))
+    const inviteLink = 'https://github.com/himanshuprakash-cyber/Frontend-Project'
+    void copyText(inviteLink).then(success => showToast(success ? 'Repo link copied' : 'Copy failed', success ? 'success' : 'warning'))
     setActivePage('team')
   }, [showToast])
 
   const handleScheduleStandup = useCallback(() => {
     const agenda = [
-      'Standup agenda',
-      '- Blockers',
-      '- Priorities',
-      '- Handoff review',
+      'Review notes',
+      '- Check responsive layout',
+      '- Confirm theme persistence',
+      '- Verify action buttons',
     ].join('\n')
-    void copyText(agenda).then(success => showToast(success ? 'Standup agenda copied' : 'Copy failed', success ? 'success' : 'warning'))
+    void copyText(agenda).then(success => showToast(success ? 'Review notes copied' : 'Copy failed', success ? 'success' : 'warning'))
     setActivePage('team')
   }, [showToast])
 
   const handleShareRoadmap = useCallback(() => {
-    const summary = `Roadmap summary: ${projectCount} active projects, ${notificationCount} unread alerts, ${workspaceSettings.compactLayout ? 'compact layout' : 'comfortable layout'}.`
-    void copyText(summary).then(success => showToast(success ? 'Roadmap summary copied' : 'Copy failed', success ? 'success' : 'warning'))
+    const summary = `Build summary: ${projectCount} open tasks, ${notificationCount} unread notes, ${workspaceSettings.compactLayout ? 'compact layout' : 'comfortable spacing'}.`
+    void copyText(summary).then(success => showToast(success ? 'Snapshot copied' : 'Copy failed', success ? 'success' : 'warning'))
     setActivePage('projects')
   }, [notificationCount, projectCount, workspaceSettings.compactLayout, showToast])
 
@@ -956,10 +957,10 @@ function App() {
   const handleSelectProject = useCallback((project) => {
     setModal({
       title: project.name,
-      text: `${project.owner} owns this workstream. It is currently ${project.status.toLowerCase()} and ${project.progress}% complete.`,
+      text: `${project.owner} owns this item. It is currently ${project.status.toLowerCase()} and ${project.progress}% complete.`,
       buttons: [
         { label: 'Open Overview', primary: true, action: () => handleNavigate('dashboard') },
-        { label: 'Copy ID', primary: false, action: () => { void copyText(project.id).then(success => showToast(success ? 'Project ID copied' : 'Copy failed', success ? 'success' : 'warning')) } },
+        { label: 'Copy Task ID', primary: false, action: () => { void copyText(project.id).then(success => showToast(success ? 'Task ID copied' : 'Copy failed', success ? 'success' : 'warning')) } },
       ],
     })
   }, [handleNavigate, showToast])
@@ -988,16 +989,16 @@ function App() {
 
   const handleNotifications = useCallback(() => {
     setModal({
-      title: 'Notifications',
-      text: `${notificationCount} unread notification${notificationCount === 1 ? '' : 's'} are waiting for you.`,
+      title: 'Build notes',
+      text: `${notificationCount} unread note${notificationCount === 1 ? '' : 's'} are waiting for you.`,
       buttons: [
-        { label: 'View All', primary: true, action: () => handleNavigate('dashboard') },
+        { label: 'Open Overview', primary: true, action: () => handleNavigate('dashboard') },
         {
           label: 'Mark All Read',
           primary: false,
           action: () => {
             setNotifications(prev => prev.map(item => ({ ...item, unread: false })))
-            showToast('Notifications marked as read', 'info')
+            showToast('Build notes marked as read', 'info')
           },
         },
       ],
@@ -1007,7 +1008,7 @@ function App() {
   const handleProfile = useCallback(() => {
     setModal({
       title: 'Profile',
-      text: 'Himanshu K. - Admin - himanshu@vortex.studio',
+      text: 'Himanshu K. - Frontend developer - @himanshuprakash-cyber',
       buttons: [
         { label: 'View Profile', primary: true, action: () => handleNavigate('team') },
         { label: 'Settings', primary: false, action: () => handleNavigate('settings') },
@@ -1056,7 +1057,7 @@ function App() {
   }, [isDark, showToast])
 
   useEffect(() => {
-    document.title = `Vortex - ${currentPage.title}`
+    document.title = `${APP_NAME} Studio - ${currentPage.title}`
   }, [currentPage.title])
 
   useEffect(() => {

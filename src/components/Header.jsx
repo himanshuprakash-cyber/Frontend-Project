@@ -37,7 +37,7 @@ export default function Header({
           <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-indigo-500 to-violet-500 shadow-lg shadow-accent-glow/30 transition-transform group-hover:scale-105">
             <Zap className="h-[18px] w-[18px] text-white" />
           </div>
-          <span className="hidden text-xl font-extrabold tracking-tight sm:inline font-heading">Vortex</span>
+          <span className="hidden text-xl font-extrabold tracking-tight sm:inline font-heading">Sciqus</span>
         </button>
       </div>
 

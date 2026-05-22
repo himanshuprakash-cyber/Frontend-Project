@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const fallbackWeeks = [
   {
-    label: 'This Week',
+    label: 'This Build',
     bars: [
       { h: '40%', bg: 'rgba(99,102,241,0.3)' },
       { h: '65%', bg: 'rgba(99,102,241,0.5)' },
@@ -15,7 +15,7 @@ const fallbackWeeks = [
     ],
   },
   {
-    label: 'Last Week',
+    label: 'First Draft',
     bars: [
       { h: '52%', bg: 'rgba(16,185,129,0.35)' },
       { h: '70%', bg: 'rgba(16,185,129,0.5)' },

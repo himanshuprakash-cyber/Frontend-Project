@@ -1,7 +1,7 @@
 const fallbackStats = [
-  { label: 'Active Users', value: '2,847', pct: '74%', color: '#6366f1', delta: '+12% this month' },
-  { label: 'Revenue', value: '$48.2k', pct: '62%', color: '#10b981', delta: '+9% week over week' },
-  { label: 'Conversion', value: '4.2%', pct: '42%', color: '#f43f5e', delta: '+0.4 points' },
+  { label: 'Connected Views', value: '5', pct: '100%', color: '#6366f1', delta: 'Header, sidebar, and cards wired' },
+  { label: 'Working Actions', value: '12', pct: '100%', color: '#10b981', delta: 'Buttons and modals respond' },
+  { label: 'Responsive States', value: '3', pct: '96%', color: '#f43f5e', delta: 'Desktop, tablet, and mobile checked' },
 ]
 
 export default function StatsCard({ stats = fallbackStats, onSelectStat }) {

@@ -3,24 +3,24 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const fallbackMembers = [
   {
-    initials: 'SK',
-    name: 'Sarah K.',
-    role: 'Design Lead',
-    stat: 'Completed 12 projects this quarter',
+    initials: 'HK',
+    name: 'Himanshu K.',
+    role: 'Frontend developer',
+    stat: 'Built the responsive shell and wired the actions',
     bg: 'linear-gradient(135deg, #6366f1, #7c3aed)',
   },
   {
-    initials: 'AM',
-    name: 'Alex M.',
-    role: 'Lead Engineer',
-    stat: 'Shipped 8 features, 0 critical bugs',
+    initials: 'UI',
+    name: 'Layout',
+    role: 'Frontend',
+    stat: 'Matched the desktop and mobile ratios',
     bg: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
   },
   {
-    initials: 'JL',
-    name: 'Jamie L.',
-    role: 'Marketing',
-    stat: 'Grew social reach by 45%',
+    initials: 'QA',
+    name: 'Checks',
+    role: 'Validation',
+    stat: 'Verified keyboard, theme, and navigation behavior',
     bg: 'linear-gradient(135deg, #f43f5e, #ec4899)',
   },
 ]

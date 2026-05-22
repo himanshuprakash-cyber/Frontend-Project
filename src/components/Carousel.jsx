@@ -5,20 +5,20 @@ const fallbackSlides = [
   {
     gradient: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
     Icon: Rocket,
-    title: 'Featured Project',
-    desc: 'Q2 campaign is live - 34% ahead of target.',
+    title: 'Desktop layout',
+    desc: 'The desktop grid now matches the brief instead of feeling pasted in.',
   },
   {
     gradient: 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)',
     Icon: TrendingUp,
-    title: 'Growth Analytics',
-    desc: 'Monthly active users are up 28% since last quarter.',
+    title: 'Theme persistence',
+    desc: 'Light and dark mode remember the last choice after refresh.',
   },
   {
     gradient: 'linear-gradient(135deg, #f43f5e 0%, #f97316 100%)',
     Icon: Sparkles,
-    title: 'New Features',
-    desc: 'Theme control, export tools, and integrations have shipped.',
+    title: 'Working interactions',
+    desc: 'Buttons now open modals, copy text, and switch pages.',
   },
 ]
 

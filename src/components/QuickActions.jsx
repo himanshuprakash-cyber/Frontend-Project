@@ -2,9 +2,9 @@ import { Download, Plus } from 'lucide-react'
 
 export default function QuickActions({
   eyebrow = 'Quick actions',
-  description = 'Spin up a new project or grab a clean export for offline reporting.',
-  primaryLabel = 'New Project',
-  secondaryLabel = 'Export Data',
+  description = 'Trigger the main actions without leaving the page.',
+  primaryLabel = 'Add Task',
+  secondaryLabel = 'Export Build',
   primaryIcon = Plus,
   secondaryIcon = Download,
   onPrimary,

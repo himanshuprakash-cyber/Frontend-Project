@@ -1,28 +1,23 @@
-# Vortex Dashboard
+# Sciqus Studio
 
-A polished, responsive dashboard built with React and Vite for showcasing product metrics, team activity, and workspace actions in one clean interface.
+Sciqus Studio is a React and Vite dashboard built to show a realistic frontend assignment instead of a placeholder mockup. It focuses on working navigation, stateful interactions, theme persistence, and a responsive layout that stays readable on desktop and mobile.
 
-## Overview
+## What It Shows
 
-This project was designed to feel more like a real product than a static assignment. It includes functional navigation, interactive controls, theme persistence, and a responsive layout that adapts cleanly from desktop to mobile.
-
-## Highlights
-
-- Functional sidebar navigation with page switching
-- Persistent light and dark mode
-- Responsive desktop and mobile layouts
-- Interactive cards, actions, modals, and toasts
-- Clean, professional dashboard styling with reusable components
-- Export and reset actions for a more realistic workflow
+- Real sidebar navigation with page switching
+- Light and dark mode that persists in the browser
+- Search, export, modal, and toast interactions that all do something useful
+- A desktop layout that follows the provided ratios and a mobile layout that stacks cleanly
+- Reusable components for the header, sidebar, cards, charts, and action panels
 
 ## Tech Stack
 
 - React 19
 - Vite
 - Tailwind CSS
-- Lucide React icons
+- Lucide React
 
-## Getting Started
+## Run It
 
 ```bash
 npm install
@@ -31,22 +26,22 @@ npm run dev
 
 Open the local URL shown in the terminal, usually `http://127.0.0.1:5173`.
 
-## Available Scripts
+## Scripts
 
 - `npm run dev` - start the development server
 - `npm run build` - create a production build
 - `npm run preview` - preview the production build locally
 - `npm run lint` - run ESLint across the project
 
-## Project Structure
+## File Map
 
-- `src/App.jsx` - dashboard state, layout, and interactions
-- `src/components/` - reusable UI blocks such as sidebar, header, cards, and modal
-- `src/index.css` - global styles and theme tokens
-- `index.html` - document metadata and theme bootstrapping
+- `src/App.jsx` - application state, page data, and action wiring
+- `src/components/` - reusable UI pieces for the dashboard
+- `src/index.css` - theme tokens, layout grid, and utility styling
+- `index.html` - metadata, fonts, and theme bootstrapping
 
 ## Notes
 
-- The UI is fully frontend-driven and does not require a backend to run.
-- Theme and settings are stored locally in the browser for a more realistic user experience.
-- The layout has been tuned to remain usable on both desktop and mobile screens.
+- The project is frontend-only, so it runs without a backend.
+- Settings and theme choices are stored locally in the browser.
+- The content is intentionally written like a real assignment review rather than a generic SaaS demo.
