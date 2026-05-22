@@ -1,16 +1,52 @@
-# React + Vite
+# Vortex Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A polished, responsive dashboard built with React and Vite for showcasing product metrics, team activity, and workspace actions in one clean interface.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This project was designed to feel more like a real product than a static assignment. It includes functional navigation, interactive controls, theme persistence, and a responsive layout that adapts cleanly from desktop to mobile.
 
-## React Compiler
+## Highlights
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Functional sidebar navigation with page switching
+- Persistent light and dark mode
+- Responsive desktop and mobile layouts
+- Interactive cards, actions, modals, and toasts
+- Clean, professional dashboard styling with reusable components
+- Export and reset actions for a more realistic workflow
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React 19
+- Vite
+- Tailwind CSS
+- Lucide React icons
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+Open the local URL shown in the terminal, usually `http://127.0.0.1:5173`.
+
+## Available Scripts
+
+- `npm run dev` - start the development server
+- `npm run build` - create a production build
+- `npm run preview` - preview the production build locally
+- `npm run lint` - run ESLint across the project
+
+## Project Structure
+
+- `src/App.jsx` - dashboard state, layout, and interactions
+- `src/components/` - reusable UI blocks such as sidebar, header, cards, and modal
+- `src/index.css` - global styles and theme tokens
+- `index.html` - document metadata and theme bootstrapping
+
+## Notes
+
+- The UI is fully frontend-driven and does not require a backend to run.
+- Theme and settings are stored locally in the browser for a more realistic user experience.
+- The layout has been tuned to remain usable on both desktop and mobile screens.

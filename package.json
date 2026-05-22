@@ -1,5 +1,6 @@
 {
   "name": "frontend-sciqus",
+  "description": "Responsive React dashboard with interactive widgets, theme persistence, and mobile-friendly navigation.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
